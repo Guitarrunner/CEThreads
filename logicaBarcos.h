@@ -3,13 +3,13 @@
 
 #include<stdio.h>
 #include<unistd.h>
-#include<cethread.h>
+#include "./references/CEthreads.h"
 #include<math.h>
 #include<stdbool.h>
 #include"lista.h"
 
-#define ANT_CONFIG_PAHT  "./jsons/Boattxt.json"
-#define ANT_AUTO_CREATE_PAHT  "./jsons/BoatCreate.json"
+#define BOAT_CONFIG_PAHT  "./jsons/Boattxt.json"
+#define BOAT_AUTO_CREATE_PAHT  "./jsons/BoatCreate.json"
 
 #define MAXSTAGESIZE  10
 typedef struct Boat{
@@ -33,8 +33,8 @@ typedef struct Boat{
 } Boat;
 
 void liberarMemoria(Boat *boat,struct List *listaBoats);
-bool rectBoatCol(float x1,float y1, float x2, float y2);
-bool validateBoatCollision(float x1,float y1, Boat *boat, struct List *listaBoats);
+bool rectBoatCol(float x1, float x2);
+bool validateBoatCollision(float x1, Boat *boat, struct List *listaBoats);
 void loadRoute(Boat *boat);
 bool getNewPos(Boat *boat);
 void BoatWhile(Boat *boat, CEthread_mutex_t *lock,struct List *listaBoats);
