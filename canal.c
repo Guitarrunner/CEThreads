@@ -35,14 +35,14 @@ void initCanal(struct Canal *canal, const char *filename){
 	canal->transit_control_algorithm	= json_object_get_int(transit_control_algorithm);
 	canal->scheduling_algorithm 		= json_object_get_int(scheduling_algorithm);
 
-	canal->ordered_boats 	= json_object_get_int(ordered_boats);
+	canal->ordered_boats 				= json_object_get_int(ordered_boats);
 
 	canal->W_boats 						= json_object_get_int(w);
 	canal->letrero_time					= json_object_get_int(letrero_time);
 
-	canal->left_boats_queue		= createList(sizeof(Boat *));
-	canal->right_boats_queue		= createList(sizeof(Boat *));
-	canal->boats_crossing_list	= createList(sizeof(Boat *));
+	canal->left_boats_queue				= createList(sizeof(Boat *));
+	canal->right_boats_queue			= createList(sizeof(Boat *));
+	canal->boats_crossing_list			= createList(sizeof(Boat *));
 
 	canal->open_side	= LEFT;
 	canal->W_count 	= 0;
@@ -76,7 +76,7 @@ void sortCanalSide(struct Canal *canal, struct List **queue){
 			fcfs_sort(*queue, canal->ordered_boats, first_come_first_served);
 			break;*/
 		case SJF:
-			sjf_sort(*queue, canal->ordered_boats, shortestJobFirst, (const void *)canal);
+			shortestJobFirst_sort(*queue, canal->ordered_boats, shortestJobFirst, (const void *)canal);
 			break;
 		default:
 			break;
@@ -234,71 +234,8 @@ void manageTraffic(struct Canal *canal){
 		checkCanalCrossed(canal);
 }
 
-//Aux function to sort each channel based on the scheduling algorithm 
-void sortCanalSide(struct Canal *canal, struct List **queue){
-	switch (canal->scheduling_algorithm){
-		case PRIORITY:
-			priority_sort(*queue, canal->ordered_boats, priority);
-			break;
-    /*    case FCFS:
-			fcfs_sort(*queue, canal->ordered_boats, first_come_first_served);
-			break;*/
-		case SJF:
-			sjf_sort(*queue, canal->ordered_boats, shortestJobFirst, (const void *)canal);
-			break;
-		default:
-			break;
-	}
-}
 
-//Inserts an boat in the left side of the channel's queue
-void insertBoatInLeft(struct Canal *canal, Boat *boat){
-	boat->pos_x += 30;
-	addLast(canal->left_boats_queue, &boat);
-	if ((canal->scheduling_algorithm == PRIORITY || canal->scheduling_algorithm == SJF) && 
-		 canal->left_boats_queue->length <= canal->ordered_boats)
-		sortCanalSide(canal, &canal->left_boats_queue);
-}
 
-//Inserts an boat in the right side of the channel's queue
-void insertBoatInRight(struct Canal *canal, Boat *boat){
-	boat->pos_x -= 30;
-	addLast(canal->right_boats_queue, &boat);
-	if ((canal->scheduling_algorithm == PRIORITY || canal->scheduling_algorithm == SJF) && 
-		canal->right_boats_queue->length <= canal->ordered_boats)
-		sortCanalSide(canal, &canal->right_boats_queue);
-}
 
-//Takes an boat out of the channel's queue based on the scheduling algorithm.
-void getBoatFromQueue(struct List **queue, struct List **boats_crossing_list, int scheduling_algorithm, int ordered_boats){
-	if (!isListEmpty(*queue)){
-		Boat *boat_tmp;
-		if (scheduling_algorithm == ROUND_ROBIN || scheduling_algorithm == PRIORITY || //In the case of these 4 algorithms, the queue was sorted previously
-			scheduling_algorithm == SJF         || scheduling_algorithm == FCFS){		//accordingly
-			getFirst(*queue, (void *)&boat_tmp);
-			removeFirst(*queue);
-		}
-		else if (scheduling_algorithm == TREAL){
-			int index;
-			if ((*queue)->length > ordered_boats)
-				index = rand() % ordered_boats;
-			else
-				index = rand() % (*queue)->length;
-			getAt(*queue, index, (void *)&boat_tmp);
-			removeAt(*queue, index);
-		}
-	}
-}
-//Allos an boat to be removed from the queue.
-void letBoatPass(struct Canal *canal, int side){
-	switch (side){
-		case LEFT:
-			getBoatFromQueue(&canal->left_boats_queue, &canal->boats_crossing_list, canal->scheduling_algorithm, canal->ordered_boats);
-			break;
-		case RIGHT:
-			getBoatFromQueue(&canal->right_boats_queue, &canal->boats_crossing_list, canal->scheduling_algorithm, canal->ordered_boats);
-			break;
-		default:
-			break;
-	}
-}
+
+

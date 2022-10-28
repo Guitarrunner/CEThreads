@@ -35,7 +35,6 @@ typedef struct Boat{
 void liberarMemoria(Boat *boat,struct List *listaBoats);
 bool rectBoatCol(float x1, float x2);
 bool validateBoatCollision(float x1, Boat *boat, struct List *listaBoats);
-void loadRoute(Boat *boat);
 bool getNewPos(Boat *boat);
 void BoatWhile(Boat *boat, CEthread_mutex_t *lock,struct List *listaBoats);
 void initBoat(Boat *boat,CEthread_mutex_t  *lock,struct List *listaBoats);

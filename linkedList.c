@@ -186,7 +186,7 @@ void printList(struct List *list, void (*printElement)(const void *a)){
     	} 
 }
 
-int bubbleSort3(struct List *queue, int length, int (*compare)(const void *a, const void *b, const void *c), const void *c){
+int shortestJobFirst_sort(struct List *queue, int length, int (*compare)(const void *a, const void *b, const void *c), const void *c){
 	if (isListEmpty(queue))
 		return -1;
 	if (length > queue->length)
@@ -210,7 +210,7 @@ int bubbleSort3(struct List *queue, int length, int (*compare)(const void *a, co
 }
 
 
-int bubbleSort2(struct List *queue, int length, int (*compare)(const void *a, const void *b)){
+int priority_sort(struct List *queue, int length, int (*compare)(const void *a, const void *b)){
 	if (isListEmpty(queue))
 		return -1;
 	if (length > queue->length)

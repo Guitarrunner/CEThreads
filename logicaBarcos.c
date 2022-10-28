@@ -61,16 +61,16 @@ void BoatWhile(Boat *boat,CEthread_mutex_t *lock,struct List *listaBoats){
         }
         if(boat->cond==1){
             if(fabs(boat->pos_x -boat->find_x)<boat->speed){
-                if(validateAntCollision(boat->find_x,boat,listaBoats)){
+                if(validateBoatCollision(boat->find_x,boat,listaBoats)){
                     boat->pos_x = boat->find_x;
                     new_pos += 1;
                 }
             }else if(boat->pos_x < boat->find_x){
-                if(validateAntCollision(boat->pos_x + boat->speed,boat,listaBoats)){
+                if(validateBoatCollision(boat->pos_x + boat->speed,boat,listaBoats)){
                     boat->pos_x = boat->pos_x + boat->speed;
                 }
             }else{
-                if(validateAntCollision(boat->pos_x - boat->speed,boat,listaBoats)){
+                if(validateBoatCollision(boat->pos_x - boat->speed,boat,listaBoats)){
                     boat->pos_x = boat->pos_x - boat->speed;
                 }
             }
@@ -99,7 +99,7 @@ void initBoat(Boat *boat,CEthread_mutex_t *lock,struct List *listaBoats){
     boat->stage         = 0;
     boat->queue         = 0;
     boat->isSelected    = 0;
-    loadRoute(boat);
+
     boat->pos_x         = boat->route_x[0];
     boat->find_x        = boat->route_x[1];
     BoatWhile(boat, lock,listaBoats);
