@@ -8,8 +8,10 @@
 #include<stdbool.h>
 #include"lista.h"
 
-#define BOAT_CONFIG_PAHT  "./jsons/Boattxt.json"
+#define BOAT_CONFIG_PATH  "./jsons/boats_config.json"
 #define BOAT_AUTO_CREATE_PAHT  "./jsons/BoatCreate.json"
+
+#define CANAL_FILENAME "./jsons/canal_config.json"
 
 #define MAXSTAGESIZE  10
 typedef struct Boat{
@@ -40,6 +42,6 @@ void BoatWhile(Boat *boat, CEthread_mutex_t *lock,struct List *listaBoats);
 void initBoat(Boat *boat,CEthread_mutex_t  *lock,struct List *listaBoats);
 void moveBoat(Boat *boat);
 void * newBoat(void *arg);
-void readBoatConfig(Boat *boat);
+void readBoatConfig(Boat *boat, char *filename);
 
 #endif

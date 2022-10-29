@@ -31,14 +31,15 @@ bool reducirSegundo(){
 
 //Boat thread initialization
 void* thread_boat(void *arg){
+	printf("Created22\n");
 	Boat *boat = (Boat *) arg;
     initBoat(boat,&lock,listaBarcos);
 }
 //Creates an boat from the specified anthill
 Boat* create_boat(int type){
 	Boat *boat = (Boat *) malloc(sizeof(Boat));
-	boat->type          = type % 3;
-	boat -> route = 1;
+	boat->type          = 0;
+	boat -> route = 0;
 
 	CEthread_t hilo;
 	CEthread_create(&hilo,NULL,&thread_boat,(void *) boat);
@@ -84,9 +85,9 @@ int main(int argc, char *argv[]){
 	float x = 0;
 
 	create_boat(0);
-	create_boat(1);
-	create_boat(2);
-	create_boat(3);
+	create_boat(0);
+	create_boat(0);
+	create_boat(0);
 
 	while (running) { 
 		if (redraw) { //Refreshing the screen
@@ -102,17 +103,14 @@ int main(int argc, char *argv[]){
 			contador += 1;
 					
 			cant_boat = 0;
-			printf("%d",listaBarcos->length);
+			//printf("%d",listaBarcos->length);
 			CEthread_mutex_trylock(&lock);
-			while(cant_boat < listaBarcos->length){	//We manage as many ants as we can handle (lenght)
+			while(cant_boat < listaBarcos->length){	//We manage as many boats as we can handle (lenght)
 				getAt(listaBarcos,cant_boat,(void *) &boat_to_show);
-				if(boat_to_show->stage != 5){ //We let the boat move around as long as it is not at the bridge
+				if(boat_to_show->stage != 10){ //We let the boat move around as long as it is not at the bridge
 					boat_to_show->cond = 1;
-					printf("Entra en if\n");
 				}else{	//Once we hit the bridge
-					printf("Entra en else\n");
 					if(!boat_to_show->queue){	//Checking if its queued already
-						printf("Revisa si esta en kiwi\n");
 						boat_to_show->queue = 1; //setting it to "queued"
 						if(boat_to_show->route == 0){	//The boat gets inserted in the corresponding bridge queue
 							insertBoatInLeft(&canal,boat_to_show);
@@ -133,10 +131,12 @@ int main(int argc, char *argv[]){
 			}
 			CEthread_mutex_unlock(&lock);
 		}
-
+		if(listaBarcos->length==0){
+			running=0;
+		}
 		//Managing the traffic of each individual channel
 		manageTraffic(&canal);
-		printf("manageTraffic\n");
+		//printf("manageTraffic\n");
 	}
 	return 0;
 }

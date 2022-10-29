@@ -2,7 +2,7 @@
 
 //Detects collision
 bool rectBoatCol(float x1, float x2){
-    if((x1 <= x2+19)&&(x2<= x1 +19)){
+    if((x1 <= x2)&&(x2<= x1)){
         return 1;
     }
     return 0;
@@ -22,6 +22,35 @@ bool validateBoatCollision(float x1,Boat *boat, struct List *listaBoats){
         p++;
     }
     return 1;
+}
+
+void loadRoute(Boat *boat){
+    if(boat->route == 0){
+
+        boat->route_x[0]    = 0;
+        boat->route_x[1]    = 10;
+        boat->route_x[2]    = 20;
+        boat->route_x[3]    = 30;
+        boat->route_x[4]    = 40;//depende
+        boat->route_x[5]    = 50;//depende
+        boat->route_x[6]    = 60;
+        boat->route_x[7]    = 70;
+        boat->route_x[8]    = 80;
+        boat->route_x[9]    = 90;
+    }
+    if(boat->route == 1){
+
+        boat->route_x[0]    = 90;
+        boat->route_x[1]    = 80;
+        boat->route_x[2]    = 70;
+        boat->route_x[3]    = 60;
+        boat->route_x[4]    = 50;//depende
+        boat->route_x[5]    = 40;//depende
+        boat->route_x[6]    = 30;
+        boat->route_x[7]    = 20;
+        boat->route_x[8]    = 10;
+        boat->route_x[9]    = 0;
+    }
 }
 
 //Calculates the new position for an boat
@@ -51,10 +80,13 @@ void liberarMemoria(Boat *boat,struct List *listaBoats){
 }
 
 void BoatWhile(Boat *boat,CEthread_mutex_t *lock,struct List *listaBoats){
+    
     int x = 0;
     int new_pos = 0;
     bool moveBoat = 1;
+
     while(moveBoat){
+        printf("Boat moving...%f\n", boat->pos_x);
         CEthread_mutex_trylock(lock);
         if(boat->stage == MAXSTAGESIZE){
             moveBoat = 0;
@@ -74,7 +106,7 @@ void BoatWhile(Boat *boat,CEthread_mutex_t *lock,struct List *listaBoats){
                     boat->pos_x = boat->pos_x - boat->speed;
                 }
             }
-            if(new_pos ==2){
+            if(new_pos ==1){
                 moveBoat = getNewPos(boat);
             }
             x++;
@@ -91,14 +123,14 @@ void BoatWhile(Boat *boat,CEthread_mutex_t *lock,struct List *listaBoats){
 }
 //Boat init
 void initBoat(Boat *boat,CEthread_mutex_t *lock,struct List *listaBoats){
-    readBoatConfig(boat);
+    printf("Init boat");
+    readBoatConfig(boat, BOAT_CONFIG_PATH);
     boat->dir           = 1;
-    boat->priority      = 3;
-    boat->weight        = 3;
     boat->cond          = 1;
     boat->stage         = 0;
     boat->queue         = 0;
     boat->isSelected    = 0;
+    loadRoute(boat);
 
     boat->pos_x         = boat->route_x[0];
     boat->find_x        = boat->route_x[1];
@@ -106,7 +138,7 @@ void initBoat(Boat *boat,CEthread_mutex_t *lock,struct List *listaBoats){
     
 }
 //Parameters for each boat are provided in a config file. This function translates those parameters into attributes
-void readBoatConfig(Boat *boat){
+void readBoatConfig(Boat *boat, char *filename){
     double a_speed;
     double a_time;
     FILE *fp;
@@ -114,14 +146,24 @@ void readBoatConfig(Boat *boat){
     struct json_object *parsed_json;
     struct json_object *speed;
     struct json_object *max_exec_time;
-    fp =fopen(BOAT_CONFIG_PAHT,"r");
+   
+    fp =fopen(filename,"r"); 
+    if(fp== NULL){
+        fprintf(stderr,"Could not open file");
+        exit(1);
+    }
+    
     fread(buffer, 1024, 1, fp);
+    
     fclose(fp);
-    parsed_json = json_tokener_parse(buffer);
     json_object_object_get_ex(parsed_json, "speed", &speed);
+    
     json_object_object_get_ex(parsed_json, "max_exec_time", &max_exec_time);
+    
     a_speed = json_object_get_double(speed);
+    a_speed=3;
     a_time = json_object_get_double(max_exec_time);
+    
     if(boat->type == 0)
         boat->speed = a_speed;
     if(boat->type == 1)

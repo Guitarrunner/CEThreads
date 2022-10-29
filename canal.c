@@ -219,12 +219,15 @@ void checkCanalCrossed(struct Canal *canal){
 void manageTraffic(struct Canal *canal){
 	switch (canal->transit_control_algorithm){
 		case EQUIDAD:
+			//printf("equidad\n");
 			equidadAlgorithm(canal);
 			break;
 		case LETRERO:
+			printf("letrero\n");
 			letreroAlgorithm(canal);
 			break;
 		case TICO:
+			printf("tico\n");
 			ticoAlgorithm(canal);
 			break;
 		default:
