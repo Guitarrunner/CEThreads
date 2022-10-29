@@ -139,7 +139,7 @@ void initBoat(Boat *boat,CEthread_mutex_t *lock,struct List *listaBoats){
 }
 //Parameters for each boat are provided in a config file. This function translates those parameters into attributes
 void readBoatConfig(Boat *boat, char *filename){
-    double a_speed;
+    int a_speed;
     double a_time;
     FILE *fp;
     char buffer[1024];

@@ -25,6 +25,7 @@ typedef struct Boat{
     int weight;
     double max_exec_time;
     int route;
+    int duration;
     int cond;
     int stage;
     int route_x[MAXSTAGESIZE];  

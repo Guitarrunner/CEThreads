@@ -36,10 +36,12 @@ void* thread_boat(void *arg){
     initBoat(boat,&lock,listaBarcos);
 }
 //Creates an boat from the specified anthill
-Boat* create_boat(int type){
+Boat* create_boat(int type, int priority, int duration, int route){
 	Boat *boat = (Boat *) malloc(sizeof(Boat));
 	boat->type          = 0;
-	boat -> route = 0;
+	boat -> route = route;
+	boat -> priority= priority;
+	boat-> duration = duration;
 
 	CEthread_t hilo;
 	CEthread_create(&hilo,NULL,&thread_boat,(void *) boat);
@@ -84,10 +86,13 @@ int main(int argc, char *argv[]){
 	bool redraw = true;
 	float x = 0;
 
-	create_boat(0);
-	create_boat(0);
-	create_boat(0);
-	create_boat(0);
+	create_boat(0,3,5,0);
+	create_boat(1,1,3,0);
+	create_boat(2,1,3,1);
+	create_boat(2,2,3,1);
+	create_boat(1,3,5,0);
+	create_boat(0,1,3,0);
+	create_boat(0,3,5,0);
 
 	while (running) { 
 		if (redraw) { //Refreshing the screen
