@@ -65,7 +65,6 @@ bool getNewPos(Boat *boat){
 
 //Used to free the memory previously occupied by an boat
 void liberarMemoria(Boat *boat,struct List *listaBoats){
-    printf("Entra a la func\n");
     int cantidad = 0;
     Boat *boat_to_remove;
     while(cantidad < listaBoats->length){
@@ -86,7 +85,6 @@ void BoatWhile(Boat *boat,CEthread_mutex_t *lock,struct List *listaBoats){
     bool moveBoat = 1;
 
     while(moveBoat){
-        printf("Boat moving...%f\n", boat->pos_x);
         CEthread_mutex_trylock(lock);
         if(boat->stage == MAXSTAGESIZE){
             moveBoat = 0;
@@ -118,12 +116,12 @@ void BoatWhile(Boat *boat,CEthread_mutex_t *lock,struct List *listaBoats){
     }
     liberarMemoria(boat,listaBoats);
     free(boat);
-    printf("Hilo eliminado.....");
+    printf("Hilo eliminado.....\n");
     
 }
 //Boat init
 void initBoat(Boat *boat,CEthread_mutex_t *lock,struct List *listaBoats){
-    printf("Init boat");
+    printf("Init boat\n");
     readBoatConfig(boat, BOAT_CONFIG_PATH);
     boat->dir           = 1;
     boat->cond          = 1;

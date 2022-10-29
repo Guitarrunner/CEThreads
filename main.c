@@ -119,16 +119,13 @@ int main(int argc, char *argv[]){
 						boat_to_show->queue = 1; //setting it to "queued"
 						if(boat_to_show->route == 0){	//The boat gets inserted in the corresponding bridge queue
 							insertBoatInLeft(&canal,boat_to_show);
-							printf("inserta izq\n");
 						}
 						if(boat_to_show->route == 3){
 							insertBoatInRight(&canal,boat_to_show);
-							printf("inserta der\n");
 						}
 					}
 					if(boat_to_show->isSelected){
 						boat_to_show->cond = 1;
-						printf("Entra en select\n");
 					}
 					
 				}
